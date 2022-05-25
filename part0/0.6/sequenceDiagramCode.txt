@@ -1,0 +1,8 @@
+note over browser:
+when submit button is pressed,
+browser starts executing js-code that adds the new note to the page (using redrawNotes())
+it also sends the new note to the server using sendToServer()
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server-->browser: <nothing>

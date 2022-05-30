@@ -116,7 +116,7 @@ export default App;
 // we can return a function with the hello function 
 // the returned function is the event handler, 
 // this is used to customize event handlers easily
-{/* <button onClick={hello('react')}>button</button>
+/* <button onClick={hello('react')}>button</button>
 const hello = (who) => {
   const handler = () => {
     console.log('hello', who)

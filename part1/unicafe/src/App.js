@@ -1,33 +1,53 @@
 import { useState } from 'react'
 
+const StatisticLine = ({text, value}) => {
+  if (text === 'positive') {
+    return (
+      <p>{text}: {value} %</p>
+    )
+  }
+  return (
+    <p>{text}: {value}</p>
+  )
+
+}
 const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>
     {text}
   </button>
 )
 
-const Display = (props) => {
+const Statistics = (props) => {
 
   const positive = () => {
     return props.values[0]/(props.values[0] + props.values[1] + props.values[2]) * 100
-
   }
-
+  const all = () => {
+    return props.values[0] + props.values[1] + props.values[2]
+  }
+  const average = () => {
+    return (props.values[0]*1 + props.values[1]*0 + props.values[2]*-1)/
+          (props.values[0] + props.values[1] + props.values[2])
+  }
+  if (props.values[0] + props.values[1] + props.values[2] === 0) {
+    return (
+      <div>
+        No feedback given
+      </div>
+    )
+  }
+  else {
   return (
-    <div>
-      <p>good: {props.values[0]}</p>
-      <p>neutral: {props.values[1]}</p>
-      <p>bad: {props.values[2]}</p>
-      <p>all: {props.values[0] + props.values[1] + props.values[2]}</p>
-      <p>
-        average: {(props.values[0]*1 + props.values[1]*0 + props.values[2]*-1)/
-        (props.values[0] + props.values[1] + props.values[2])}
-      </p>
-      <p>
-        positive: {positive()} %
-      </p>
-    </div>
-  )
+      <div>
+        <StatisticLine text='good' value ={props.values[0]} />
+        <StatisticLine text='neutral' value ={props.values[1]} />
+        <StatisticLine text='bad' value ={props.values[2]} />
+        <StatisticLine text='all' value ={all()} />
+        <StatisticLine text='average' value ={average()} />
+        <StatisticLine text='positive' value ={positive()} />
+      </div>
+    )
+  }
 }
 
 const App = () => {
@@ -54,7 +74,7 @@ const App = () => {
       <Button handleClick={()=>increaseValue('neutral')} text='neutral' />
       <Button handleClick={()=>increaseValue('bad')} text = 'bad' />
       <h1>Statistics</h1>
-      <Display values={[good, neutral, bad]} />
+      <Statistics values={[good, neutral, bad]} />
     </div>
   )
 }

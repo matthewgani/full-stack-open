@@ -7,13 +7,25 @@ const Button = ({ handleClick, text }) => (
 )
 
 const Display = (props) => {
-  console.log(props)
+
+  const positive = () => {
+    return props.values[0]/(props.values[0] + props.values[1] + props.values[2]) * 100
+
+  }
 
   return (
     <div>
       <p>good: {props.values[0]}</p>
       <p>neutral: {props.values[1]}</p>
       <p>bad: {props.values[2]}</p>
+      <p>all: {props.values[0] + props.values[1] + props.values[2]}</p>
+      <p>
+        average: {(props.values[0]*1 + props.values[1]*0 + props.values[2]*-1)/
+        (props.values[0] + props.values[1] + props.values[2])}
+      </p>
+      <p>
+        positive: {positive()} %
+      </p>
     </div>
   )
 }

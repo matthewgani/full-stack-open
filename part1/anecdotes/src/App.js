@@ -1,5 +1,17 @@
 import { useState } from 'react'
 
+
+const MostVoted = (props) => {
+  const max = Math.max(...props.votes)
+  const index = props.votes.indexOf(max)
+  return (
+    <div>
+      <div>{props.anecdotes[index]}</div>
+      <div>has {props.votes[index]} votes</div>
+    </div>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often',
@@ -12,22 +24,47 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Uint8Array(7))
+  
+  // const [points, setPoints] = useState(Array(anecdotes.length).fill(0))
+
+  // const getRandom = (min, max) => {
+  //   min = Math.ceil(min);
+  //   max = Math.floor(max);
+  //   //The maximum is inclusive and the minimum is inclusive
+  //   return Math.floor(Math.random() * (max - min + 1) + min);
+  // };
+
 
   const randomize = () => {
-    let num = Math.floor(Math.random() * 7)
+    let num = Math.floor(Math.random() * anecdotes.length)
     setSelected(num)
+  }
+  const vote = () => {
+    // need to use copy to update state in objects and arrays
+    const copy = [...votes]
+    copy[selected] += 1
+    setVotes(copy)
   }
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <div>
+        has {votes[selected]} points
+      </div>
+      <div>
+        <button onClick={vote}> vote </button>
         <button onClick={randomize}>next anecdote</button> 
       </div>
 
+      <h1>Anecdote with the most votes</h1>
+      <MostVoted anecdotes={anecdotes} votes={votes}></MostVoted>
     </div>
 
   )
+
 }
 
 export default App

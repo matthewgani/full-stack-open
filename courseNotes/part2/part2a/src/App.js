@@ -9,6 +9,8 @@ const App = () => {
   const [newNote, setNewNote] = useState('') 
   const [showAll, setShowAll] = useState(true)
 
+  // executed immediately after body of fn is executed first time
+  // after rendering
   useEffect(() => {
     console.log('effect')
     axios

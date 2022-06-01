@@ -20,6 +20,12 @@ const App = () => {
 
   const handleAddName = (event) => {
     event.preventDefault()
+    const temp = persons.map(person => person.name)
+    // console.log(temp);
+    if (temp.includes(newName)){
+      alert(`${newName} is already added to phonebook`)
+      return
+    }
     let personObject = {
       name: newName
     }

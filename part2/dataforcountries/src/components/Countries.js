@@ -1,5 +1,20 @@
-const Country = ({info}) => {
+import {useState} from 'react'
 
+const Button = ({ handleClick, text }) => (
+    <button onClick={handleClick}>
+      {text}
+    </button>
+)
+
+const Country = ({info, show, btn}) => {
+    const [showInfo, setShowInfo] = useState(false)
+
+    // if you do this, can lead to infinite loop because we 
+    // re render when we call setshowinfo.
+    
+    // if (show) {
+    //     setShowInfo(true)
+    // }
 
     const getLanguages = ()=> {
         const languages = Object.entries(info.languages)
@@ -8,43 +23,73 @@ const Country = ({info}) => {
 
     const languages = getLanguages()
 
+
+    const toggleButton = () => {
+        let newState = !showInfo
+        setShowInfo(newState)
+
+    }
+    
     return (
         <div>
-            <h1>{info.name.common}</h1>
+            {btn ?
+                <div>
+                    <span key={info.name.common}>{info.name.common} </span>
+                    <Button key={info.name.common + 'btn'} handleClick={toggleButton} text='show' />
+                </div>
+                : null
+            }
+            {showInfo ?
+                <div>
+                    <h1>{info.name.common}</h1>
 
-            <div>
-                <p>Capital: {info.capital}</p>
-                <p>Area: {info.area}</p>
-            </div>
+                    <div>
+                        <p>Capital: {info.capital}</p>
+                        <p>Area: {info.area}</p>
+                    </div>
 
-            <h2>Languages:</h2>
+                    <h2>Languages:</h2>
 
-            <ul>
-                {languages.map(language => 
-                    <li key={language[1]}>{language[1]}</li>
-                )}
-            </ul>
+                    <ul>
+                        {languages.map(language => 
+                            <li key={language[1]}>{language[1]}</li>
+                        )}
+                    </ul>
 
-            <img style={{border:'1px solid black'}} src={info.flags.png} alt="Country flag"></img>
+                    <img style={{border:'1px solid black'}} src={info.flags.png} alt="Country flag"></img>
+                </div>
+            : null
+            }
+            {show ? 
+                <div>
+                    <h1>{info.name.common}</h1>
+
+                    <div>
+                        <p>Capital: {info.capital}</p>
+                        <p>Area: {info.area}</p>
+                    </div>
+
+                    <h2>Languages:</h2>
+
+                    <ul>
+                        {languages.map(language => 
+                            <li key={language[1]}>{language[1]}</li>
+                        )}
+                    </ul>
+
+                    <img style={{border:'1px solid black'}} src={info.flags.png} alt="Country flag"></img>
+                </div>
+                : null
+            }
         </div>
     )
+
+
 }
 
-const Button = ({ handleClick, text }) => (
-    <button onClick={handleClick}>
-      {text}
-    </button>
-  )
 
 const Countries = ({countriesToShow}) => {
 
-    const showInfo = (country) => {
-        return (
-            <div>
-                <Country key={country.name.common} info={country}/>
-            </div>
-        )
-    }
     if (countriesToShow.length > 10) {
         return (
             <div>
@@ -53,24 +98,18 @@ const Countries = ({countriesToShow}) => {
         )
     }
     else if (countriesToShow.length <= 10 && countriesToShow.length > 1) {
-        console.log(countriesToShow);
         return (
             <div>
-                {countriesToShow.map(country=> {
-                    return (
-                        <div>
-                            <span key={country.name.common}>{country.name.common}</span>
-                            <Button key={country.name.common + 'btn'} handleClick={()=>showInfo(country)} text='show' />
-                        </div>
-                    )
-                })}
+                {countriesToShow.map(country=> 
+                    <Country key={country.name.common} info={country} show={false} btn={true} />    
+                )}
             </div>
         )
     }
     else if (countriesToShow.length === 1) {
         return (
             <div>
-                <Country key={countriesToShow[0].name.common} info={countriesToShow[0]}/>
+                <Country key={countriesToShow[0].name.common} info={countriesToShow[0]} show={true} btn={false}/>
             </div>
         )
     }

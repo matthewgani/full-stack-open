@@ -8,7 +8,6 @@ const App = () => {
   const [countries, setCountries] = useState([])
   const [filter, setFilter] = useState('')
 
-
   // executed immediately after body of fn is executed first time
   // after rendering
   useEffect(() => {
@@ -20,8 +19,6 @@ const App = () => {
         setCountries(response.data)
       })
   }, [])
-  // console.log('render', countries.length, 'countries')
-
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value)

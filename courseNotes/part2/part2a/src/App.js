@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Note from './components/Note'
+import noteService from './services/notes'
 
 //In order to get our page to update when new notes are added 
 // it's best to store the notes in the App component's state. 
@@ -13,11 +13,10 @@ const App = () => {
   // after rendering
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/notes')
-      .then(response => {
-        console.log('promise fulfilled')
-        setNotes(response.data)
+    noteService
+      .getAll()
+      .then(initialNotes => {
+          setNotes(initialNotes)
       })
   }, [])
   console.log('render', notes.length, 'notes')
@@ -28,15 +27,17 @@ const App = () => {
     const noteObject = {
       content: newNote,
       date: new Date().toISOString(),
-      important: Math.random() < 0.5,
-      id: notes.length + 1,
+      important: Math.random() < 0.5
+      // id: notes.length + 1,
     }
-    
-    // concat creates new arr with the new noteobject
-    setNotes(notes.concat(noteObject))
 
-    //reset newnote field to empty string
-    setNewNote('')
+    // dont add id above because we should let server generate id
+    noteService
+      .create(noteObject)
+      .then(returnedNote => {
+        setNotes(notes.concat(returnedNote))
+        setNewNote('')
+      })
   }
 
   const handleNoteChange = (event) => {
@@ -45,6 +46,24 @@ const App = () => {
     // for input change (onChange)
     console.log(event.target.value)
     setNewNote(event.target.value)
+  }
+
+  const toggleImportanceOf = (id) => {
+    // const url = `http://localhost:3001/notes/${id}`
+
+
+    const note = notes.find(n => n.id === id)
+    // need to remake note object bc in react we should edit note directly
+    const changedNote = { ...note, important: !note.important }
+    
+    // we use put to update the changed note with a new object
+    // we return response.data which is the new object to the setnotes
+    // for updating the array
+    noteService
+      .update(id, changedNote)
+      .then(returnedNote => {
+        setNotes(notes.map(note => note.id !== id ? note : returnedNote))
+      })
   }
 
   const notesToShow = showAll
@@ -63,7 +82,8 @@ const App = () => {
       </div>
       <ul>
         {notesToShow.map(note => 
-          <Note key={note.id} note={note} />
+          <Note key={note.id} note={note} 
+          toggleImportance={() => toggleImportanceOf(note.id)}/>
         )}
       </ul>
       <form onSubmit={addNote}>

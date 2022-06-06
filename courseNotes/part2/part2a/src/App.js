@@ -1,6 +1,21 @@
 import { useState, useEffect } from 'react'
 import Note from './components/Note'
 import noteService from './services/notes'
+import './index.css'
+
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+}
+
 
 //In order to get our page to update when new notes are added 
 // it's best to store the notes in the App component's state. 
@@ -8,6 +23,7 @@ const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('') 
   const [showAll, setShowAll] = useState(true)
+  const [errorMessage, setErrorMessage] = useState('some error happened...')
 
   // executed immediately after body of fn is executed first time
   // after rendering
@@ -66,9 +82,12 @@ const App = () => {
       })
       .catch(error => {
         // in case the note was already deleted
-        alert(
-          `the note '${note.content}' was already deleted from server`
+        setErrorMessage(
+          `Note '${note.content}' was already removed from server`
         )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
         setNotes(notes.filter(n => n.id !== id))
       })
   }
@@ -82,6 +101,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMessage} />
       <div> 
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all' }

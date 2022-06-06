@@ -4,13 +4,15 @@ import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 
 import phoneBookService from './services/phoneBookService'
+import './index.css'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-
+  const [errorMessage, setErrorMessage] = useState(null)
 
   // executed immediately after body of fn is executed first time
   // after rendering
@@ -21,12 +23,6 @@ const App = () => {
       .then(initialPersons => {
         setPersons(initialPersons)
       })
-    // axios
-    //   .get('http://localhost:3001/persons')
-    //   .then(response => {
-    //     console.log('promise fulfilled')
-    //     setPersons(response.data)
-    //   })
   }, [])
   console.log('render', persons.length, 'persons')
 
@@ -65,9 +61,22 @@ const App = () => {
           .update(person.id, personObject)
           .then(returnedPerson => {
             setPersons(persons.map(person=> person.id !== personObject.id ? person : returnedPerson))
+            setErrorMessage(`Updated ${personObject.name}'s number!`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+          })
+          .catch(error => {
+            setErrorMessage(`${person.name} was already removed from the server`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+            console.log(error)
+            setPersons(persons.filter(person => person.id !== personObject.id))
           })
         setNewName('')
         setNewNumber('')
+
         return
       }
     }
@@ -85,11 +94,13 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
-      })
 
-    // setPersons(persons.concat(personObject))
-    // setNewName('')
-    // setNewNumber('')
+        setErrorMessage(`Added ${personObject.name}!`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
+    
   }
 
   const handleDelete = (id) => {
@@ -103,6 +114,10 @@ const App = () => {
       .then(e => {
         console.log('deleted id', id)
         setPersons(persons.filter(person => person.id !== id))
+        setErrorMessage(`${person.name} has been deleted from the server`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
 
   }
@@ -116,6 +131,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <div>
         <Filter handleChange={handleFilterChange} value={filter}/>
       </div>

@@ -1,6 +1,9 @@
 const http = require('http')
 const express = require('express')
 const app = express()
+const cors = require('cors')
+
+app.use(cors())
 app.use(express.json())
 // uses node built in web server module http
 
@@ -88,3 +91,8 @@ app.post('/api/notes', (request, response) => {
 const PORT = 3001
 app.listen(PORT)
 console.log(`Server running on port ${PORT}`)
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+app.use(unknownEndpoint)

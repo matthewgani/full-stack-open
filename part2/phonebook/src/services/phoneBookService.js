@@ -1,5 +1,6 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/persons'
+const baseUrl = '/api/persons'
+// changed from localhost:3001/persons to use as static build with backend
 
 const getAll = () => {
   const request = axios.get(baseUrl)

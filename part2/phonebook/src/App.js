@@ -39,6 +39,14 @@ const App = () => {
 
   const handleAdd = (event) => {
     event.preventDefault()
+
+    if (newName === '' || newNumber === '') {
+      setErrorMessage(`Please fill in both fields`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+      return
+    }
     const temp = persons.map(person => person.name)
     // console.log(temp);
     if (temp.includes(newName)){
@@ -87,6 +95,7 @@ const App = () => {
       number: newNumber,
       // id: persons.length + 1
     }
+    
 
     phoneBookService
       .create(personObject)

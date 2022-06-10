@@ -75,10 +75,15 @@ const App = () => {
             }, 5000)
           })
           .catch(error => {
-            setErrorMessage(`${person.name} was already removed from the server`)
+            if (error.response.data.errorName === 'ValidationError') {
+              setErrorMessage(error.response.data.errorMessage)
+            }
+            else {
+              setErrorMessage(`${person.name} was already removed from the server`)
+            }
             setTimeout(() => {
               setErrorMessage(null)
-            }, 5000)
+            }, 10000)
             console.log(error)
             setPersons(persons.filter(person => person.id !== personObject.id))
           })
@@ -108,6 +113,17 @@ const App = () => {
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
+      })
+      .catch(error => {
+        console.log(error)
+        if (error.response.data.errorName === 'ValidationError') {
+          setErrorMessage(error.response.data.errorMessage)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 10000)
+          setNewName('')
+          setNewNumber('')
+        }
       })
     
   }
